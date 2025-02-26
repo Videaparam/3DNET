@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Network Visualization</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #exportPDF {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 8px;
+            background-color: #0b2530;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        #exportPDF:hover {
+            background-color: #005f87;
+        }
+    </style>
+</head>
+<body>
+    <div id="nodeTitle" style="
+      position: absolute;
+      color: white;
+      background: rgba(49, 35, 154, 0.6);
+      padding: 5px;
+      border-radius: 3px;
+      display: none;
+      pointer-events: none;
+      font-family: sans-serif;
+      font-size: 25px;
+  "></div>
+
+<div id="partyFilters" style="
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(120, 169, 139, 0.178);
+    padding: 8px;
+    border-radius: 4px;
+    color: #af9e9e;
+    font-size: 8px;
+    z-index: 1000;
+    line-height: 1;
+">
+  <div style="font-weight: bold; margin-bottom: 5px;">Party Filters</div>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="AKP" checked style="width:12px; height:12px;"> AKP
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="CHP" checked style="width:12px; height:12px;"> CHP
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="HDP" checked style="width:12px; height:12px;"> HDP
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="MHP" checked style="width:12px; height:12px;"> MHP
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="DEVA" checked style="width:12px; height:12px;"> DEVA
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="GELECEK" checked style="width:12px; height:12px;"> GELECEK
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="SAADET" checked style="width:12px; height:12px;"> SAADET
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="DP" checked style="width:12px; height:12px;"> DP
+  </label>
+  <label style="display: block; margin-bottom: 1px;">
+    <input type="checkbox" value="IYI" checked style="width:12px; height:12px;"> IYI
+  </label>
+</div>
+
+
+    
+    <button id="exportPDF">Export to PDF</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="visualization_enhanced.js"></script>
+    </script>
+</body>
+</html>
