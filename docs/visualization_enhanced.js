@@ -38,9 +38,7 @@ let raycaster = new THREE.Raycaster();
 function init() {
     // Scene setup
     scene = new THREE.Scene();
-    scene.background = new THREE.Color("#1f1e1d");
-
-
+    scene.background = new THREE.Color("#acacad");
     scene.fog = new THREE.Fog(0x000000, 1000, 20000);
 
     // Renderer setup with WebGL preservation
@@ -76,14 +74,18 @@ function init() {
     renderer.domElement.addEventListener('mousemove', onCanvasHover);
     window.addEventListener('resize', onWindowResize);
 
+    // Create the party legend
+    createLegend();
+
     // Initialize data loading
     loadData();
 }
 
 
+
 // Data loading functions
 function loadData() {
-    d3.csv("docs/sampled_nodes_test_15.csv").then(data => {
+    d3.csv("sampled_nodes_test_15.csv").then(data => {
         data.forEach(processNodeData);
         adjustCamera();
         loadEdges();
@@ -111,7 +113,7 @@ function createNode(d, x, y, z) {
     const material = new THREE.MeshPhongMaterial({
         color: color,
         emissive: 0x000000,
-        shininess: 50,
+        shininess: 1000,
         transparent: true,
         opacity: 1.0
     });
@@ -131,7 +133,7 @@ function createNode(d, x, y, z) {
 
 // Edge management
 function loadEdges() {
-    const edgeFile = useBundledEdges ? "docs/bundled_edges_test_15.csv" : "docs/sampled_edges_test_15.csv";
+    const edgeFile = useBundledEdges ? "bundled_edges_test_15.csv" : "sampled_edges_test_15.csv";
     
     d3.csv(edgeFile).then(data => {
         scene.children = scene.children.filter(obj => !(obj instanceof THREE.Line));
@@ -140,8 +142,8 @@ function loadEdges() {
         const edgeMaterial = new THREE.LineBasicMaterial({
             vertexColors: true,
             transparent: true,
-            opacity: useBundledEdges ? 0.3 : 0.7,
-            linewidth: 1,
+            opacity: useBundledEdges ? 0.3 : 0.8,
+            linewidth: 0.1,
             depthTest: true
         });
 
@@ -310,6 +312,36 @@ function onNodeClick(node) {
 }
 
 
+
+
+function createLegend() {
+    const legendDiv = document.getElementById('legend');
+    if (!legendDiv) return;
+    
+    // Add a title to the legend
+    legendDiv.innerHTML = '<div style="font-weight: bold; margin-bottom: 5px;">Party Legend</div>';
+    
+    // Loop through each party and add a legend item
+    for (const party in partyColors) {
+        // Get the hex string of the color. THREE.Color's getHexString() returns a string like "ff8000".
+        const colorHex = '#' + partyColors[party].getHexString();
+        
+        // Create a new div for this legend item
+        const legendItem = document.createElement('div');
+        legendItem.style.display = 'flex';
+        legendItem.style.alignItems = 'center';
+        legendItem.style.marginBottom = '3px';
+        
+        // Set the inner HTML: a colored box and the party name
+        legendItem.innerHTML = `
+            <div style="width: 12px; height: 12px; background: ${colorHex}; margin-right: 5px; border: 1px solid #000;"></div>
+            <span>${party}</span>
+        `;
+        
+        // Append the item to the legend container
+        legendDiv.appendChild(legendItem);
+    }
+}
 
 
 
