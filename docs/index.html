@@ -1,31 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Network Visualization</title>
-    <style>
-        body { margin: 0; }
-        canvas { display: block; }
-        #exportPDF {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            padding: 8px;
-            background-color: #0b2530;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-        #exportPDF:hover {
-            background-color: #005f87;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Network Visualization</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+    /* PDF Export Button */
+    #exportPDF {
+      position: absolute;
+      top: 250px;
+      right: 6px;
+      padding: 6px;
+      background-color: #15272f8f;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      border-radius: 1px;
+      z-index: 200;
+    }
+    #exportPDF:hover { background-color: #005f87; }
+  </style>
 </head>
 <body>
-    <div id="nodeTitle" style="
+  <!-- Centered Title Info Box -->
+  <div id="headerTitle" style="
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.27);
+      padding: 10px 20px;
+      border-radius: 1px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 20px;
+      color: #fff;
+      z-index: 1000;
+  ">
+    Network of Political Accounts - Secim2023
+  </div>
+
+  <!-- Left-side Information Box -->
+  <div id="infoBox" style="
+      position: absolute;
+      top: 50px;
+      left: 10px;
+      width: 100px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.211);
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      line-height: 1.4;
+      border-radius: 1px;
+      z-index: 1000;
+  ">
+    <h3 style="margin-top: 0; font-size: 12px;">Party networks</h3>
+    <p><strong>#Secim2023:</strong> First Public Dataset for Studying Turkish General Election</p>
+    <p><strong>Secim2023 Website:</strong> <a href="https://secim2023.biz/" target="_blank" style="color: #0a0a0a;">secim2023.biz</a></p>
+    <p><strong>VIRAL LAB Website:</strong> <a href="https://varollab.com/" target="_blank" style="color: #0a0a0a;">varollab.com</a></p>
+  </div>
+
+  <!-- Node Title Overlay (for hover) -->
+  <div id="nodeTitle" style="
       position: absolute;
       color: white;
       background: rgba(49, 35, 154, 0.6);
@@ -37,57 +76,68 @@
       font-size: 25px;
   "></div>
 
-<div id="partyFilters" style="
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(120, 169, 139, 0.178);
-    padding: 8px;
-    border-radius: 4px;
-    color: #af9e9e;
-    font-size: 8px;
-    z-index: 1000;
-    line-height: 1;
-">
-  <div style="font-weight: bold; margin-bottom: 5px;">Party Filters</div>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="AKP" checked style="width:12px; height:12px;"> AKP
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="CHP" checked style="width:12px; height:12px;"> CHP
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="HDP" checked style="width:12px; height:12px;"> HDP
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="MHP" checked style="width:12px; height:12px;"> MHP
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="DEVA" checked style="width:12px; height:12px;"> DEVA
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="GELECEK" checked style="width:12px; height:12px;"> GELECEK
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="SAADET" checked style="width:12px; height:12px;"> SAADET
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="DP" checked style="width:12px; height:12px;"> DP
-  </label>
-  <label style="display: block; margin-bottom: 1px;">
-    <input type="checkbox" value="IYI" checked style="width:12px; height:12px;"> IYI
-  </label>
-</div>
+  <!-- Legend for Party Colors -->
+  <div id="legend" style="
+      position: absolute;
+      top: 300px;
+      right: 10px;
+      background: rgba(41, 39, 39, 0.114);
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 8px;
+      z-index: 1000;
+  "></div>
 
+  <!-- Party Filters -->
+  <div id="partyFilters" style="
+      position: absolute;
+      top: 40px;
+      right: 10px;
+      background: rgba(120, 169, 139, 0.178);
+      padding: 8px;
+      border-radius: 4px;
+      color: #101010;
+      font-family: Arial, sans-serif;
+      font-size: 8px;
+      z-index: 1000;
+      line-height: 1;
+  ">
+    <div style="font-weight: bold; margin-bottom: 8px;">Party Filters</div>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="AKP" checked style="width:12px; height:12px;"> AKP
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="CHP" checked style="width:12px; height:12px;"> CHP
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="HDP" checked style="width:12px; height:12px;"> HDP
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="MHP" checked style="width:12px; height:12px;"> MHP
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="DEVA" checked style="width:12px; height:12px;"> DEVA
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="GELECEK" checked style="width:12px; height:12px;"> GELECEK
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="SAADET" checked style="width:12px; height:12px;"> SAADET
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="DP" checked style="width:12px; height:12px;"> DP
+    </label>
+    <label style="display: block; margin-bottom: 1px;">
+      <input type="checkbox" value="IYI" checked style="width:12px; height:12px;"> IYI
+    </label>
+  </div>
 
-    
-    <button id="exportPDF">Export to PDF</button>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="visualization_enhanced.js"></script>
-    </script>
+  <button id="exportPDF">Export to PDF</button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="visualization_enhanced.js"></script>
 </body>
 </html>
