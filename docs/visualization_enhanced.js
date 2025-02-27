@@ -80,7 +80,7 @@ function init() {
     controls.maxDistance = 100000;
 
     // Lighting
-    // scene.add(new THREE.AmbientLight(0x404040));
+    scene.add(new THREE.AmbientLight("#ffffff"));
 
     // Add a directional light to your scene
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -88,10 +88,9 @@ function init() {
     scene.add(directionalLight);
 
     // Optionally, add a point light for extra illumination
-    // const pointLight = new THREE.PointLight(0xffffff, 0.8);
-    // pointLight.position.set(-10, -10, 10);
-    // scene.add(pointLight);
-
+    const pointLight = new THREE.PointLight(0xffffff, 0.8);
+    pointLight.position.set(-10, -10, 10);
+    scene.add(pointLight);
 
 
     // Event listeners
