@@ -38,7 +38,7 @@ let raycaster = new THREE.Raycaster();
 function init() {
     // Scene setup
     scene = new THREE.Scene();
-    scene.background = new THREE.Color("#acacad");
+    scene.background = new THREE.Color("#031430");
     scene.fog = new THREE.Fog(0x000000, 1000, 20000);
 
     // Renderer setup with WebGL preservation
