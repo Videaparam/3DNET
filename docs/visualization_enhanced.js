@@ -28,11 +28,21 @@ let boundingBox = {
 let selectedParties = new Set(Object.keys(partyColors));
 
 
+
+
 // Interaction variables
 let mouse = new THREE.Vector2();
 let raycaster = new THREE.Raycaster();
 
 
+function makeShiny(color) {
+    // Clone the original color and increase brightness slightly for the specular highlight.
+    const shinyColor = color.clone();
+    shinyColor.offsetHSL(0, 0, 1); // adjust brightness; experiment with the value
+    return shinyColor;
+  }
+
+  
 
 // Initialize application
 function init() {
@@ -45,16 +55,19 @@ function init() {
     try {
         renderer = new THREE.WebGLRenderer({ 
             antialias: true,
+            alpha: true,              // enable alpha for transparency
             preserveDrawingBuffer: true // Essential for PDF export
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x111111);
+       // Set the clear color with 0 alpha (transparent)
+        renderer.setClearColor(0x111111, 0);
         document.body.appendChild(renderer.domElement);
     } catch (error) {
         alert("WebGL initialization failed: " + error);
         return;
     }
+    
 
     // Camera setup
     camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000000);
@@ -67,7 +80,19 @@ function init() {
     controls.maxDistance = 100000;
 
     // Lighting
-    scene.add(new THREE.AmbientLight(0x404040));
+    // scene.add(new THREE.AmbientLight(0x404040));
+
+    // Add a directional light to your scene
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(10, 10, 10);
+    scene.add(directionalLight);
+
+    // Optionally, add a point light for extra illumination
+    // const pointLight = new THREE.PointLight(0xffffff, 0.8);
+    // pointLight.position.set(-10, -10, 10);
+    // scene.add(pointLight);
+
+
 
     // Event listeners
     renderer.domElement.addEventListener('click', onCanvasClick);
@@ -85,7 +110,7 @@ function init() {
 
 // Data loading functions
 function loadData() {
-    d3.csv("sampled_nodes_test_15.csv").then(data => {
+    d3.csv("data/sampled_nodes_test_15.csv").then(data => {
         data.forEach(processNodeData);
         adjustCamera();
         loadEdges();
@@ -107,13 +132,14 @@ function processNodeData(d) {
 }
 
 function createNode(d, x, y, z) {
-    const geometry = new THREE.SphereGeometry(parseFloat(d.size)/0.5, 32, 32);
+    const geometry = new THREE.SphereGeometry(parseFloat(d.size) / 0.5, 32, 32);
     const color = partyColors[d.party] || new THREE.Color(0xFFFFFF);
     
-    const material = new THREE.MeshPhongMaterial({
+    const material = new THREE.MeshStandardMaterial({
         color: color,
-        emissive: 0x000000,
-        shininess: 1000,
+        metalness: 0.1,  // lower metalness to let the base color show
+        roughness: 0.4,  // adjust roughness for a balanced shiny look
+        emissive: new THREE.Color(0x000000), // set emissive to black to avoid tinting the color
         transparent: true,
         opacity: 1.0
     });
@@ -131,9 +157,11 @@ function createNode(d, x, y, z) {
 }
 
 
+
+
 // Edge management
 function loadEdges() {
-    const edgeFile = useBundledEdges ? "bundled_edges_test_15.csv" : "sampled_edges_test_15.csv";
+    const edgeFile = useBundledEdges ? "bundled_edges_test_15.csv" : "data/sampled_edges_test_15.csv";
     
     d3.csv(edgeFile).then(data => {
         scene.children = scene.children.filter(obj => !(obj instanceof THREE.Line));
@@ -428,28 +456,53 @@ document.querySelectorAll('#partyFilters input[type="checkbox"]').forEach(checkb
   
 // PDF Export
 document.getElementById('exportPDF').addEventListener('click', () => {
+    // Save current scene background and remove it for transparent export.
+    const originalSceneBackground = scene.background;
+    scene.background = null;
+
+    // Save the original renderer size.
     const originalSize = { 
         width: renderer.domElement.width, 
         height: renderer.domElement.height 
     };
-    const scaleFactor = 2;
+    // Set a higher scale factor for high-resolution export.
+    const scaleFactor = 4;  
 
+    // Temporarily resize renderer for high-resolution capture.
     renderer.setSize(originalSize.width * scaleFactor, originalSize.height * scaleFactor, false);
     camera.aspect = (originalSize.width * scaleFactor) / (originalSize.height * scaleFactor);
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
 
-    html2canvas(renderer.domElement).then(canvas => {
+    // Capture the renderer's canvas with html2canvas, ensuring no background.
+    html2canvas(renderer.domElement, {
+        scale: scaleFactor,
+        backgroundColor: null  // Ensures the canvas is captured with a transparent background.
+    }).then(canvas => {
+        // Restore the scene background and original renderer size.
+        scene.background = originalSceneBackground;
         renderer.setSize(originalSize.width, originalSize.height, false);
         camera.aspect = originalSize.width / originalSize.height;
         camera.updateProjectionMatrix();
         renderer.render(scene, camera);
 
+        // Get the high-resolution PNG data URL.
+        const pngDataURL = canvas.toDataURL('image/png');
+
+        // Create a PDF using the canvas dimensions.
         const pdf = new jspdf.jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
-        pdf.addImage(canvas, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.addImage(pngDataURL, 'PNG', 0, 0, canvas.width, canvas.height);
         pdf.save('network-visualization.pdf');
+
+        // Also, trigger a download for the high-resolution PNG.
+        const a = document.createElement('a');
+        a.href = pngDataURL;
+        a.download = 'network-visualization.png';
+        a.click();
     });
 });
+
+
 
 // Animation loop
 function animate() {
