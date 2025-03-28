@@ -10,7 +10,7 @@
     /* PDF Export Button */
     #exportPDF {
       position: absolute;
-      top: 250px;
+      top: 350px;
       right: 6px;
       padding: 6px;
       background-color: #15272f8f;
@@ -64,23 +64,23 @@
   </div>
 
   <!-- Logo Box for Two PNG Logos (placed under the info box) -->
-<div id="logoBox" style="
-  position: fixed;
-    bottom: 10px;
-    right: 10px;
-    width: 100px;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0);
-    border-radius: 1px;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-">
-<img src="vrllab-logo.png" alt="VRL Lab" style="width: 48%; height: auto;">
-<img src="secim2023-logo.png" alt="Secim2023" style="width: 48%; height: auto;">
-</div>
+  <div id="logoBox" style="
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 100px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0);
+      border-radius: 1px;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+  ">
+    <img src="vrllab-logo.png" alt="VRL Lab" style="width: 48%; height: auto;">
+    <img src="secim2023-logo.png" alt="Secim2023" style="width: 48%; height: auto;">
+  </div>
 
-  <!-- Node Title Overlay (for hover) -->
+  <!-- Node Title Overlay (for hover and persistent selection) -->
   <div id="nodeTitle" style="
       position: absolute;
       color: white;
@@ -148,14 +148,18 @@
     <label style="display: block; margin-bottom: 1px;">
       <input type="checkbox" value="IYI" checked style="width:12px; height:12px;"> IYI
     </label>
+    <button id="selectAll" style="margin-top: 5px; font-size: 8px;">Select All</button>
+    <button id="unselectAll" style="margin-top: 5px; font-size: 8px;">Unselect All</button>
+    <label style="display: block; margin-top: 5px;">
+      <input type="checkbox" id="toggleNodeTitles" style="width:12px; height:12px;"> Show Node Titles
+    </label>
   </div>
 
   <button id="exportPDF">Export to PDF</button>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="visualization_enhanced.js"></script>
+  <script src="visualization_enhanced.js"></script> 
 </body>
 </html>
