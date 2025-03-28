@@ -109,7 +109,7 @@ function init() {
 
 // Data loading functions
 function loadData() {
-    d3.csv("docs/sampled_nodes_test_15.csv").then(data => {
+    d3.csv("docs/sampled_nodes_test_edgebundling.csv").then(data => {
         data.forEach(processNodeData);
         adjustCamera();
         loadEdges();
@@ -160,7 +160,7 @@ function createNode(d, x, y, z) {
 
 // Edge management
 function loadEdges() {
-    const edgeFile = useBundledEdges ? "docs/bundled_edges_test_15.csv" : "docs/sampled_edges_test_15.csv";
+    const edgeFile = useBundledEdges ? "docs/bundled_output_dijkstra.csv" : "docs/sampled_edges_test_edgebundling.csv";
     
     d3.csv(edgeFile).then(data => {
         scene.children = scene.children.filter(obj => !(obj instanceof THREE.Line));
