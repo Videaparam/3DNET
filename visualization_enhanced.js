@@ -174,7 +174,7 @@ function init() {
 // Data loading functions
 // -----------------
 function loadData() {
-  d3.csv("Data/sampled_nodes_test_edgebundling.csv").then(data => {
+  d3.csv("sampled_nodes_test_edgebundling.csv").then(data => {
     data.forEach(processNodeData);
     adjustCamera();
     loadEdges();
@@ -223,7 +223,7 @@ function createNode(d, x, y, z) {
 // Optimized edge loading using THREE.LineSegments
 // -----------------
 function loadEdges() {
-  const edgeFile = useBundledEdges ? "bundled_output_dijkstra.csv" : "Data/sampled_edges_test_edgebundling.csv";
+  const edgeFile = useBundledEdges ? "bundled_output_dijkstra.csv" : "sampled_edges_test_edgebundling.csv";
   d3.csv(edgeFile).then(data => {
     // Remove existing edge segments if any
     if (edgeSegments) {
